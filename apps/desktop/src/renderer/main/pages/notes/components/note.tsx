@@ -52,6 +52,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 
 type InvitedUser = {
@@ -202,6 +203,11 @@ export default function Note({
       setTimeout(() => setShowConfirmation(false), 3000);
     }
   }; */
+
+  const handleCopyTitle = () => {
+    navigator.clipboard.writeText(noteTitle);
+    toast.success(t("settings.history.toast.copied"));
+  };
 
   const handleDeleteClick = () => {
     setShowDeleteDialog(false);
@@ -487,11 +493,14 @@ export default function Note({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  {/* <DropdownMenuItem className="gap-2">
+                  <DropdownMenuItem
+                    className="gap-2"
+                    onSelect={() => handleCopyTitle()}
+                  >
                     <Copy className="h-4 w-4" />
                     Copy
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="gap-2">
+                  {/* <DropdownMenuItem className="gap-2">
                     <FileText className="h-4 w-4" />
                     Duplicate
                   </DropdownMenuItem>
