@@ -12,3 +12,10 @@ const createCuid = init({
 export function createEntityId(entity: EntityType): string {
   return `${prefixes[entity]}_${createCuid()}`;
 }
+
+const entityIdPattern = /^(nt|voc|snp)_[a-z][a-z0-9]{23}$/;
+
+/** Returns true when `value` is a well-formed entity ID for any known type. */
+export function isValidEntityId(value: string): boolean {
+  return entityIdPattern.test(value);
+}
