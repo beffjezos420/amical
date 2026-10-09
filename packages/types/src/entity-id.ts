@@ -34,3 +34,41 @@ export function getEntityType(value: string): EntityType | null {
   }
   return null;
 }
+
+export interface ParsedEntityId {
+  /** The entity type this ID was created for. */
+  type: EntityType;
+  /**
+   * The unique CUID2 body — everything after the prefix and underscore.
+   * The part of the ID that distinguishes one entity from another within
+   * the same type.
+   */
+  id: string;
+  /** The original entity ID string, preserved for pass-through use. */
+  raw: string;
+}
+
+/**
+ * Parse a well-formed entity ID into its type and unique-id parts.
+ *
+ * Combines validation, type extraction, and CUID body extraction in one
+ * call. Returns `null` when the value is not a valid entity ID for any
+ * known type.
+ *
+ * Inverse of {@link createEntityId}: every string produced by
+ * `createEntityId(type)` can be decomposed back into
+ * `{ type, id, raw }` via this function.
+ *
+ * @example
+ * ```ts
+ * const parsed = parseEntityId("nt_abcdef...");
+ * // { type: "note", id: "abcdef...", raw: "nt_abcdef..." }
+ * ```
+ */
+export function parseEntityId(value: string): ParsedEntityId | null {
+  if (!isValidEntityId(value)) return null;
+  const type = getEntityType(value);
+  if (!type) return null;
+  const prefix = prefixes[type];
+  return { type, id: value.slice(prefix.length + 1), raw: value };
+}
